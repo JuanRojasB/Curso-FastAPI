@@ -1,19 +1,16 @@
-# Mi API FastAPI - Práctica Pydantic
+# My API with Pydantic - Semana 2
+## 📌 Descripción
+API creada en el Bootcamp FastAPI que incluye:
+- Validación automática con **Pydantic**
+- Endpoints **POST** y **GET**
+- Parámetros de ruta y query
+- Response models para respuestas consistentes
+- Manejo básico de errores
 
-## ¿Qué hace?
+---
 
-API que valida automáticamente los datos usando modelos Pydantic.
-
-## Nuevos Features
-
-- ✅ Modelo Pydantic para productos
-- ✅ Validación automática de datos en POST
-- ✅ Campos con valores por defecto
-- ✅ Modelo Pydantic más completo para usuarios
-- ✅ Rechazo de datos incorrectos de forma automática
-
-## ¿Cómo ejecutar?
+## 🚀 Instalación y ejecución
 
 ```bash
-pip install fastapi pydantic uvicorn
+pip install -r requirements.txt
 uvicorn main:app --reload
