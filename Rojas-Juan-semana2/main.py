@@ -2,41 +2,44 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
 
-app = FastAPI(title="Mi API - Semana 2")
+app = FastAPI(title="My API with Pydantic")
 
-# Modelo Pydantic
+# Modelo Pydantic básico
 class Product(BaseModel):
     name: str
-    price: float
-    description: Optional[str] = None
+    price: int  # en centavos para evitar decimales
+    available: bool = True  # valor por defecto
 
-# Base de datos temporal
-products_db: list[dict] = []
+# Lista temporal de productos
+products: list[dict] = []
 
 # Endpoint raíz
 @app.get("/", response_model=dict)
-def home() -> dict:
-    return {"message": "API Semana 2 funcionando"}
+def hello_world() -> dict:
+    return {"message": "API with Pydantic!"}
 
-# POST: Crear producto
+# POST: Crear producto con validación automática
 @app.post("/products", response_model=dict)
 def create_product(product: Product) -> dict:
-    new_product = product.dict()
-    new_product["id"] = len(products_db) + 1
-    products_db.append(new_product)
-    return {"message": "Producto creado con éxito", "product": new_product}
+    product_dict = product.dict()
+    product_dict["id"] = len(products) + 1
+    products.append(product_dict)
+    return {"message": "Product created", "product": product_dict}
 
 # GET: Listar todos los productos
-@app.get("/products", response_model=list[dict])
-def get_products() -> list[dict]:
-    return products_db
+@app.get("/products", response_model=dict)
+def get_products() -> dict:
+    return {"products": products, "total": len(products)}
 
-# GET: Obtener producto por ID
-@app.get("/products/{product_id}", response_model=dict)
-def get_product(product_id: int) -> dict:
-    for product in products_db:
-        if product["id"] == product_id:
-            return product
-    return {"error": "Producto no encontrado"}
+# Modelo Pydantic más completo (opcional)
+class CompleteUser(BaseModel):
+    name: str
+    age: int
+    email: str
+    phone: Optional[str] = None
+    active: bool = True
 
-    
+# POST: Crear usuario con validación automática
+@app.post("/users", response_model=dict)
+def create_user(user: CompleteUser) -> dict:
+    return {"user": user.dict(), "valid": True}

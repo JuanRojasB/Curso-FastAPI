@@ -1,16 +1,16 @@
-# Mi API FastAPI - Semana 2
+# Mi API FastAPI - Práctica Pydantic
 
 ## ¿Qué hace?
 
-API mejorada con validación automática de datos y type hints.
+API que valida automáticamente los datos usando modelos Pydantic.
 
-## Nuevos Features (Semana 2)
+## Nuevos Features
 
-- ✅ Type hints en todas las funciones
-- ✅ Validación automática con Pydantic
-- ✅ Endpoint POST para crear productos
-- ✅ Parámetros de ruta (ejemplo: /products/{id})
-- ✅ Búsqueda de productos con parámetros query
+- ✅ Modelo Pydantic para productos
+- ✅ Validación automática de datos en POST
+- ✅ Campos con valores por defecto
+- ✅ Modelo Pydantic más completo para usuarios
+- ✅ Rechazo de datos incorrectos de forma automática
 
 ## ¿Cómo ejecutar?
 
