@@ -1,6 +1,5 @@
 # 🌐 Proyecto FastAPI - Bootcamp
-
-👨‍💻 Autor: Juan David Rojas Burbano 
+👨‍💻 Estudiante: Juan David Rojas Burbano 
 ✉️ Contacto: juan.david.rojas.burbano0@gmail.com
 📌 Inicio del proyecto: 02/08/2025  
 
