@@ -54,3 +54,12 @@ http://127.0.0.1:8000/docs
 - Implementación de endpoints **async** donde corresponda (simulación I/O), y manejo básico de errores con `HTTPException`.  
 - Definición de **response models** para respuestas consistentes y uso apropiado de códigos HTTP.  
 - Introducción a tests básicos y a consideraciones de paginación/filtrado para listados.
+
+### ✅ Semana 4 - Bases de Datos con FastAPI
+
+- Integración de SQLAlchemy con FastAPI para persistencia real en base de datos SQLite.
+- Diseño de modelos relacionales simples con claves foráneas (One-to-Many).
+- Implementación de CRUD completo para múltiples entidades (Create, Read, Update, Delete).
+- Aplicación de validaciones de reglas de negocio básicas en los modelos.
+- Realización de testing básico para verificar el correcto funcionamiento con bases de datos en memoria.
+- Uso de migraciones con Alembic para gestionar cambios en el esquema de la base de datos.
