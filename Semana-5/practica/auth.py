@@ -1,7 +1,10 @@
 # auth.py
+
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
+from sqlalchemy.orm import Session
+from .models import User
 
 # Configuración de hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -39,3 +42,33 @@ def verify_token(token: str) -> str:
         return username
     except JWTError:
         return None
+
+# Funciones adicionales para la gestión de usuarios
+
+def create_user(db: Session, username: str, email: str, password: str):
+    """Crear usuario con password hasheado"""
+    hashed_password = hash_password(password)
+
+    db_user = User(
+        username=username,
+        email=email,
+        hashed_password=hashed_password
+    )
+
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+def get_user_by_username(db: Session, username: str):
+    """Obtener usuario por username"""
+    return db.query(User).filter(User.username == username).first()
+
+def authenticate_user(db: Session, username: str, password: str):
+    """Verificar usuario y password"""
+    user = get_user_by_username(db, username)
+    if not user:
+        return False
+    if not verify_password(password, user.hashed_password):
+        return False
+    return user
