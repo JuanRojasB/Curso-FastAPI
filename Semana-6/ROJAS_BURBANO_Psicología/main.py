@@ -9,7 +9,8 @@ from database import SessionLocal, engine
 from schemas import (
     UserCreate, UserResponse, Token, LoginRequest,
     PatientCreate, PatientResponse,
-    PsychologicalConsultationCreate, PsychologicalConsultationResponse
+    PsychologicalConsultationCreate, PsychologicalConsultationResponse,
+    PsychologicalConsultationUpdate, PsychologicalConsultationPartialUpdate
 )
 from auth import (
     hash_password,
@@ -31,8 +32,7 @@ def get_db():
     finally:
         db.close()
 
-
-# --- AUTH ---
+# --- AUTH --- 
 
 @app.post("/register", response_model=UserResponse)
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
@@ -126,7 +126,7 @@ def list_patients(skip: int = 0, limit: int = 10, current_user: models.User = De
 # --- PSYCHOLOGICAL CONSULTATIONS ---
 
 @app.post(
-    "/consultations",
+    "/psych_consultas",
     response_model=PsychologicalConsultationResponse,
     status_code=status.HTTP_201_CREATED
 )
@@ -138,7 +138,90 @@ def create_consultation(consultation: PsychologicalConsultationCreate, current_u
     return db_consultation
 
 
-@app.get("/consultations", response_model=List[PsychologicalConsultationResponse])
-def list_consultations(skip: int = 0, limit: int = 10, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
-    consultations = db.query(models.PsychologicalConsultation).offset(skip).limit(limit).all()
-    return consultations
+@app.get("/psych_consultas", response_model=List[PsychologicalConsultationResponse])
+def list_psych_consultas(skip: int = 0, limit: int = 10, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    psych_consultas = db.query(models.PsychologicalConsultation).offset(skip).limit(limit).all()
+    return psych_consultas
+
+
+@app.get("/psych_consultas/{entity_id}", response_model=PsychologicalConsultationResponse)
+def get_consultation_by_id(
+    entity_id: int,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    db_consultation = db.query(models.PsychologicalConsultation).filter(models.PsychologicalConsultation.id == entity_id).first()
+    if not db_consultation:
+        raise HTTPException(status_code=404, detail="Not Found")
+    return db_consultation
+
+
+@app.put("/psych_consultas/{entity_id}", response_model=PsychologicalConsultationResponse)
+def update_consultation(
+    entity_id: int,
+    consultation: PsychologicalConsultationUpdate,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    db_consultation = db.query(models.PsychologicalConsultation).filter(models.PsychologicalConsultation.id == entity_id).first()
+    if not db_consultation:
+        raise HTTPException(status_code=404, detail="Not Found")
+
+    for key, value in consultation.model_dump(exclude_unset=True).items():
+        setattr(db_consultation, key, value)
+
+    db.commit()
+    db.refresh(db_consultation)
+    return db_consultation
+
+
+@app.patch("/psych_consultas/{entity_id}", response_model=PsychologicalConsultationResponse)
+def partial_update_consultation(
+    entity_id: int,
+    consultation: PsychologicalConsultationPartialUpdate,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    db_consultation = db.query(models.PsychologicalConsultation).filter(models.PsychologicalConsultation.id == entity_id).first()
+    if not db_consultation:
+        raise HTTPException(status_code=404, detail="Not Found")
+
+    for key, value in consultation.model_dump(exclude_unset=True).items():
+        setattr(db_consultation, key, value)
+
+    db.commit()
+    db.refresh(db_consultation)
+    return db_consultation
+
+
+# --- DELETE ENDPOINTS ---
+
+@app.delete("/psych_consultas/{entity_id}", status_code=status.HTTP_200_OK)
+def delete_consultation(
+    entity_id: int,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    db_consultation = db.query(models.PsychologicalConsultation).filter(models.PsychologicalConsultation.id == entity_id).first()
+    if not db_consultation:
+        raise HTTPException(status_code=404, detail="Not Found")
+    
+    db.delete(db_consultation)
+    db.commit()
+    return {"detail": "Consultation deleted successfully"}
+
+
+@app.delete("/psych_consultas/{entity_id}", status_code=status.HTTP_404_NOT_FOUND)
+def delete_consultation_not_found(
+    entity_id: int,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    db_consultation = db.query(models.PsychologicalConsultation).filter(models.PsychologicalConsultation.id == entity_id).first()
+    if not db_consultation:
+        raise HTTPException(status_code=404, detail="Consultation not found")
+    
+    db.delete(db_consultation)
+    db.commit()
+    return {"detail": "Consultation not found"}
+

@@ -3,14 +3,12 @@ from enum import Enum
 from typing import Optional
 from datetime import date
 
-
 # --- ENUMS ---
 
 class UserRole(str, Enum):
     admin = "admin"
     psychologist = "psychologist"
     patient = "patient"
-
 
 # --- AUTH & USERS ---
 
@@ -19,7 +17,6 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     role: UserRole
-
 
 class UserResponse(BaseModel):
     id: int
@@ -30,17 +27,14 @@ class UserResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-
 class Token(BaseModel):
     access_token: str
     token_type: str
     username: str
 
-
 class LoginRequest(BaseModel):
     username: str
     password: str
-
 
 # --- PATIENTS ---
 
@@ -53,16 +47,13 @@ class PatientBase(BaseModel):
     medical_history: Optional[str] = None
     emergency_contact: Optional[str] = None
 
-
 class PatientCreate(PatientBase):
     pass
-
 
 class PatientResponse(PatientBase):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
-
 
 # --- PSYCHOLOGICAL CONSULTATION ---
 
@@ -75,13 +66,33 @@ class PsychologicalConsultationBase(BaseModel):
     assigned_therapist: str
     observations: Optional[str] = None
 
-
 class PsychologicalConsultationCreate(PsychologicalConsultationBase):
     patient_id: int
-
 
 class PsychologicalConsultationResponse(PsychologicalConsultationBase):
     id: int
     patient_id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+class PsychologicalConsultationUpdate(PsychologicalConsultationBase):
+    # Optional fields can be updated
+    reason_for_consultation: Optional[str] = None
+    preliminary_diagnosis: Optional[str] = None
+    current_medication: Optional[str] = None
+    first_session_date: Optional[date] = None
+    number_of_sessions: Optional[int] = Field(ge=0, default=None)
+    assigned_therapist: Optional[str] = None
+    observations: Optional[str] = None
+
+# --- PSYCHOLOGICAL CONSULTATION ---
+
+class PsychologicalConsultationPartialUpdate(PsychologicalConsultationBase):
+    # All fields are optional for partial update
+    reason_for_consultation: Optional[str] = None
+    preliminary_diagnosis: Optional[str] = None
+    current_medication: Optional[str] = None
+    first_session_date: Optional[date] = None
+    number_of_sessions: Optional[int] = Field(ge=0, default=None)
+    assigned_therapist: Optional[str] = None
+    observations: Optional[str] = None

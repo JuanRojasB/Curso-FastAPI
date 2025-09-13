@@ -33,7 +33,7 @@ class Patient(Base):
     emergency_contact = Column(String, nullable=False)
 
     # Relación con consultas psicológicas
-    consultations = relationship("PsychologicalConsultation", back_populates="patient")
+    psych_consultas = relationship("PsychologicalConsultation", back_populates="patient")
 
 # --- Modelo PsychologicalConsultation ---
 
@@ -51,4 +51,6 @@ class PsychologicalConsultation(Base):
     observations = Column(String, nullable=True)
 
     # Relación con paciente
-    patient = relationship("Patient", back_populates="consultations")
+    patient = relationship("Patient", back_populates="psych_consultas")
+
+
