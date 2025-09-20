@@ -1,29 +1,25 @@
-# The `DomainCacheConfig` class manages cache data with specific TTL settings and key generation based
-# on a domain prefix.
-# The `DomainCacheConfig` class provides methods for managing cache data with specific TTL settings
-# and key generation based on a domain prefix.
 # app/cache/redis_config.py
 import redis
 import json
-from typing import Optional, Any
 import os
+from typing import Optional, Any
 
 class DomainCacheConfig:
-    def __init__(self, domain_prefix: str = "spa_"):  # Ajustamos el valor por defecto
+    def __init__(self, domain_prefix: str = "spa_"):  # Valor por defecto
         self.domain_prefix = domain_prefix  # Tu prefijo específico (spa_, edu_, etc.)
         self.redis_client = redis.Redis(
             host=os.getenv('REDIS_HOST', 'localhost'),
-            port=os.getenv('REDIS_PORT', 6379),
+            port=int(os.getenv('REDIS_PORT', 6379)),
             db=0,
             decode_responses=True
         )
 
-        # TTL específicos por tipo de dato de tu dominio
+        # TTLs específicos por tipo de dato de tu dominio (en segundos)
         self.cache_ttl = {
-            'frequent_data': 300,     # 5 minutos para datos frecuentes
-            'stable_data': 3600,      # 1 hora para datos estables
-            'reference_data': 86400,  # 24 horas para datos de referencia
-            'temp_data': 60           # 1 minuto para datos temporales
+            'frequent_data': 300,     # 5 minutos
+            'stable_data': 3600,      # 1 hora
+            'reference_data': 86400,  # 24 horas
+            'temp_data': 60           # 1 minuto
         }
 
     def get_cache_key(self, category: str, identifier: str) -> str:
@@ -68,7 +64,6 @@ class DomainCacheConfig:
                     self.redis_client.delete(*domain_keys)
         except Exception as e:
             print(f"Error invalidating cache: {e}")
-
 
 # Instancia global de cache_manager
 cache_manager = DomainCacheConfig(domain_prefix="spa_")
