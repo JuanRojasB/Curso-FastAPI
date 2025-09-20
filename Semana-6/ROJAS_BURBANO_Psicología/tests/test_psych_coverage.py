@@ -28,13 +28,13 @@ def test_ruta_critica_eliminacion_psych(client, auth_headers):
     """Cobertura de ruta crítica: eliminación y verificación de no existencia"""
     # Crear paciente válido primero
     patient_data = {
-        "first_name": "Paciente",
-        "last_name": "Test",
-        "age": 30,
-        "phone_number": "1234567890",
-        "email": "paciente_test@example.com",
-        "medical_history": "Sin antecedentes",
-        "emergency_contact": "Contacto Test"
+        "first_name": "Roberto",
+        "last_name": "Juan Perez",
+        "age": 34,
+        "phone_number": "3216549870",
+        "email": "r_juan_perez@clinicapsi.com",
+        "medical_history": "Ansiedad leve en 2023",
+        "emergency_contact": "Maria Perez 3121234567"
     }
     patient_resp = client.post("/patients", json=patient_data, headers=auth_headers)
     assert patient_resp.status_code == 200
@@ -44,13 +44,13 @@ def test_ruta_critica_eliminacion_psych(client, auth_headers):
     from datetime import date
     data = {
         "patient_id": patient_id,
-        "reason_for_consultation": "Estrés",
-        "preliminary_diagnosis": "Estrés laboral",
-        "current_medication": "Ninguno",
+        "reason_for_consultation": "Ansiedad laboral",
+        "preliminary_diagnosis": "Trastorno adaptativo",
+        "current_medication": "Sertralina",
         "first_session_date": date.today().isoformat(),
-        "number_of_sessions": 5,
-        "assigned_therapist": "Dr. Juan",
-        "observations": "Sin antecedentes relevantes."
+        "number_of_sessions": 8,
+        "assigned_therapist": "Dr. Juan Perez",
+        "observations": "Paciente con estrés por cambio de trabajo."
     }
     create_resp = client.post("/psych_consultas", json=data, headers=auth_headers)
     assert create_resp.status_code == 201
