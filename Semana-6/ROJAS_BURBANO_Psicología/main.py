@@ -131,6 +131,15 @@ def list_patients(skip: int = 0, limit: int = 10, current_user: models.User = De
     status_code=status.HTTP_201_CREATED
 )
 def create_consultation(consultation: PsychologicalConsultationCreate, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+
+    # Validación: la fecha de la primera sesión no puede estar en el pasado
+    from datetime import date
+    if consultation.first_session_date < date.today():
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=[{"msg": "first_session_date cannot be in the past", "loc": ["first_session_date"]}]
+        )
+
     db_consultation = models.PsychologicalConsultation(**consultation.model_dump())
     db.add(db_consultation)
     db.commit()

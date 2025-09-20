@@ -1,3 +1,4 @@
+import datetime
 class TestPsychologyAPI:
 
     def test_create_consult_success(self, client, auth_headers, sample_patient_data, sample_psychology_consult_data):
@@ -9,13 +10,11 @@ class TestPsychologyAPI:
         # 2) Prepare consultation data with patient_id
         consult_data = sample_psychology_consult_data.copy()
         consult_data["patient_id"] = patient_id
-
-        # 3) Create consultation
+        # Set first_session_date to tomorrow
+        consult_data["first_session_date"] = (datetime.date.today() + datetime.timedelta(days=1)).isoformat()
         response = client.post("/psych_consultas", json=consult_data, headers=auth_headers)
         assert response.status_code == 201
         data = response.json()
-
-        # Validate returned fields
         assert data["patient_id"] == patient_id
         assert data["reason_for_consultation"] == consult_data["reason_for_consultation"]
         assert data["preliminary_diagnosis"] == consult_data["preliminary_diagnosis"]
@@ -58,14 +57,14 @@ class TestPsychologyAPI:
     def test_create_psych_complete(self, client, auth_headers):
         # Datos de ejemplo para una consulta psicológica (ajustar según tu dominio)
         data = {
-            "patient_id": 123,  # ID de un paciente existente
-            "reason_for_consultation": "Ansiedad",  # Ejemplo de motivo de consulta
-            "preliminary_diagnosis": "Estrés generalizado",  # Diagnóstico preliminar
-            "current_medication": "Ninguno",  # Medicación actual
-            "first_session_date": "2023-09-15",  # Fecha de la primera sesión
-            "number_of_sessions": 10,  # Número de sesiones recomendadas
-            "assigned_therapist": "Dr. Juan Pérez",  # Nombre del terapeuta asignado
-            "observations": "Paciente con antecedentes de ansiedad."  # Observaciones relevantes
+            "patient_id": 123,
+            "reason_for_consultation": "Ansiedad",
+            "preliminary_diagnosis": "Estrés generalizado",
+            "current_medication": "Ninguno",
+            "first_session_date": (datetime.date.today() + datetime.timedelta(days=1)).isoformat(),
+            "number_of_sessions": 10,
+            "assigned_therapist": "Dr. Juan Pérez",
+            "observations": "Paciente con antecedentes de ansiedad."
         }
 
         # Enviar la solicitud para crear la consulta
@@ -94,14 +93,14 @@ class TestPsychologyAPI:
         
         # Crear la consulta inicial con datos de un usuario específico
         create_data = {
-            "patient_id": 456,  # ID de un paciente existente
-            "reason_for_consultation": "Ansiedad",  # Motivo inicial de consulta
-            "preliminary_diagnosis": "Estrés generalizado",  # Diagnóstico inicial
-            "current_medication": "Ninguno",  # Medicación inicial
-            "first_session_date": "2023-09-15",  # Fecha de la primera sesión inicial
-            "number_of_sessions": 10,  # Número de sesiones inicial
-            "assigned_therapist": "Dr. Juan Pérez",  # Terapeuta asignado inicial
-            "observations": "Paciente con antecedentes de ansiedad."  # Observaciones iniciales
+            "patient_id": 456,
+            "reason_for_consultation": "Ansiedad",
+            "preliminary_diagnosis": "Estrés generalizado",
+            "current_medication": "Ninguno",
+            "first_session_date": (datetime.date.today() + datetime.timedelta(days=1)).isoformat(),
+            "number_of_sessions": 10,
+            "assigned_therapist": "Dr. Juan Pérez",
+            "observations": "Paciente con antecedentes de ansiedad."
         }
         
         # Crear la consulta (POST)
@@ -111,14 +110,14 @@ class TestPsychologyAPI:
         
         # Datos de actualización completa con un nuevo ID para el ejemplo
         update_data = {
-            "patient_id": 456,  # ID del paciente
-            "reason_for_consultation": "Depresión",  # Nuevo motivo de consulta
-            "preliminary_diagnosis": "Depresión mayor",  # Nuevo diagnóstico preliminar
-            "current_medication": "Antidepresivos",  # Nueva medicación
-            "first_session_date": "2023-09-20",  # Nueva fecha de la primera sesión
-            "number_of_sessions": 12,  # Nuevo número de sesiones
-            "assigned_therapist": "Dra. Marta López",  # Nuevo terapeuta asignado
-            "observations": "Paciente con antecedentes familiares de depresión."  # Nueva observación
+            "patient_id": 456,
+            "reason_for_consultation": "Depresión",
+            "preliminary_diagnosis": "Depresión mayor",
+            "current_medication": "Antidepresivos",
+            "first_session_date": (datetime.date.today() + datetime.timedelta(days=2)).isoformat(),
+            "number_of_sessions": 12,
+            "assigned_therapist": "Dra. Marta López",
+            "observations": "Paciente con antecedentes familiares de depresión."
         }
         
         # Realizar la actualización completa (PUT)
@@ -144,14 +143,14 @@ class TestPsychologyAPI:
         
         # Crear la consulta inicial con datos de otro usuario específico
         create_data = {
-            "patient_id": 789,  # ID de un paciente diferente
-            "reason_for_consultation": "Estrés",  # Motivo inicial de consulta
-            "preliminary_diagnosis": "Estrés generalizado",  # Diagnóstico inicial
-            "current_medication": "Ninguno",  # Medicación inicial
-            "first_session_date": "2023-09-25",  # Fecha de la primera sesión inicial
-            "number_of_sessions": 8,  # Número de sesiones inicial
-            "assigned_therapist": "Dr. Luis Gómez",  # Terapeuta asignado inicial
-            "observations": "Paciente con alta carga laboral."  # Observaciones iniciales
+            "patient_id": 789,
+            "reason_for_consultation": "Estrés",
+            "preliminary_diagnosis": "Estrés generalizado",
+            "current_medication": "Ninguno",
+            "first_session_date": (datetime.date.today() + datetime.timedelta(days=1)).isoformat(),
+            "number_of_sessions": 8,
+            "assigned_therapist": "Dr. Luis Gómez",
+            "observations": "Paciente con alta carga laboral."
         }
         
         # Crear la consulta (POST)
@@ -189,11 +188,11 @@ class TestPsychologyAPI:
         """Test de eliminación exitosa en psicología"""
         # Crear la consulta
         create_data = {
-            "patient_id": 123,  # ID de un paciente existente
+            "patient_id": 123,
             "reason_for_consultation": "Ansiedad",
             "preliminary_diagnosis": "Estrés generalizado",
             "current_medication": "Ninguno",
-            "first_session_date": "2023-09-15",
+            "first_session_date": (datetime.date.today() + datetime.timedelta(days=1)).isoformat(),
             "number_of_sessions": 10,
             "assigned_therapist": "Dr. Juan Pérez",
             "observations": "Paciente con antecedentes de ansiedad."
@@ -217,3 +216,76 @@ class TestPsychologyAPI:
         # Intentar eliminar una consulta que no existe
         response = client.delete("/psych_consultas/99999", headers=auth_headers)  # ID ficticio
         assert response.status_code == 404  # Debería devolver un 404 porque la consulta no existe
+
+
+
+    def test_psych_consult_business_rules(self, client, auth_headers, sample_patient_data, sample_psychology_consult_data):
+        """
+        Test de reglas de negocio específicas para consultas psicológicas:
+         - number_of_sessions > 0 y <= 60
+         - first_session_date no en el pasado
+         - assigned_therapist debe contener 'Dr.' o 'Dra.'
+         - reason_for_consultation longitud mínima
+        """
+        # 1) Crear paciente (precondición)
+        patient_resp = client.post("/patients", json=sample_patient_data, headers=auth_headers)
+        assert patient_resp.status_code == 200
+        patient_id = patient_resp.json()["id"]
+
+        # Base válida que usaremos como plantilla
+        base = sample_psychology_consult_data.copy()
+        base["patient_id"] = patient_id
+
+        # CASO A: número de sesiones inválido (0 y negativo)
+        invalid_a = base.copy()
+        invalid_a["number_of_sessions"] = 0
+        resp_a = client.post("/psych_consultas", json=invalid_a, headers=auth_headers)
+        assert resp_a.status_code == 422
+        errors_a = resp_a.json().get("detail", [])
+        assert any("number_of_sessions" in str(e) for e in errors_a)
+
+        # CASO B: número de sesiones excesivo (más de 60)
+        invalid_b = base.copy()
+        invalid_b["number_of_sessions"] = 999
+        resp_b = client.post("/psych_consultas", json=invalid_b, headers=auth_headers)
+        assert resp_b.status_code == 422
+        errors_b = resp_b.json().get("detail", [])
+        assert any("number_of_sessions" in str(e) for e in errors_b)
+
+        # CASO C: fecha de primera sesión en el pasado
+        invalid_c = base.copy()
+        yesterday = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
+        invalid_c["first_session_date"] = yesterday
+        resp_c = client.post("/psych_consultas", json=invalid_c, headers=auth_headers)
+        assert resp_c.status_code == 422
+        errors_c = resp_c.json().get("detail", [])
+        assert any("first_session_date" in str(e) for e in errors_c)
+
+        # CASO D: terapeuta sin título profesional
+        invalid_d = base.copy()
+        invalid_d["assigned_therapist"] = "Juan Perez"  # falta 'Dr.' o 'Dra.'
+        resp_d = client.post("/psych_consultas", json=invalid_d, headers=auth_headers)
+        assert resp_d.status_code == 422
+        errors_d = resp_d.json().get("detail", [])
+        assert any("assigned_therapist" in str(e) for e in errors_d)
+
+        # CASO E: motivo de consulta demasiado corto / vacío
+        invalid_e = base.copy()
+        invalid_e["reason_for_consultation"] = "ok"
+        resp_e = client.post("/psych_consultas", json=invalid_e, headers=auth_headers)
+        assert resp_e.status_code == 422
+        errors_e = resp_e.json().get("detail", [])
+        assert any("reason_for_consultation" in str(e) for e in errors_e)
+
+        # CASO F: combinación de errores (para asegurar mensajes múltiples)
+        invalid_f = base.copy()
+        invalid_f["number_of_sessions"] = -5
+        invalid_f["first_session_date"] = "2000-01-01"
+        invalid_f["assigned_therapist"] = "NoTitle"
+        invalid_f["reason_for_consultation"] = ""
+        resp_f = client.post("/psych_consultas", json=invalid_f, headers=auth_headers)
+        assert resp_f.status_code == 422
+        errors_f = resp_f.json().get("detail", [])
+        # Verificamos que al menos uno de los errores esperados aparezca
+        expected_fields = ["number_of_sessions", "first_session_date", "assigned_therapist", "reason_for_consultation"]
+        assert any(any(field in str(e) for field in expected_fields) for e in errors_f)

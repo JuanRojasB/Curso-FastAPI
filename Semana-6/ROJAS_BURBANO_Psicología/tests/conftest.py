@@ -60,33 +60,32 @@ def sample_patient_data():
 # Sample data fixture for psychology consult (adapted)
 @pytest.fixture
 def sample_psychology_consult_data():
+    from datetime import date
     return {
-        "reason_for_consultation": "Generalized anxiety and difficulty sleeping",
-        "preliminary_diagnosis": "Generalized Anxiety Disorder (F41.1)",
-        "current_medication": "None",
-        "first_session_date": "2025-09-01",
-        "number_of_sessions": 4,
-        "assigned_therapist": "Dr. Andrea Gómez",
-        "observations": "Good treatment compliance. Psychiatric evaluation recommended if symptoms persist."
+        "reason_for_consultation": "Ansiedad laboral",
+        "preliminary_diagnosis": "Trastorno adaptativo",
+        "current_medication": "Sertralina",
+        "first_session_date": date.today().isoformat(),
+        "number_of_sessions": 8,
+        "assigned_therapist": "Dr. Juan Perez",
+        "observations": "Paciente con estrés por cambio de trabajo."
     }
 
 @pytest.fixture
 def auth_headers(client):
     # Register admin psychologist user for tests
     register_response = client.post("/register", json={
-        "username": "admin_psych_",
-        "email": "admin_psych@example.com",
-        "password": "test123",
-        "role": "psychologist"
+        "username": "admin_clinicapsi",
+        "email": "admin@clinicapsi.com",
+        "password": "AdminPsico2025!",
+        "role": "admin"
     })
-    assert register_response.status_code in (200, 400)  # allow already exists
+    assert register_response.status_code in (200, 400)
 
-    # Login to get token
     login_response = client.post("/login", json={
-        "username": "admin_psych_",
-        "password": "test123"
+        "username": "admin_clinicapsi",
+        "password": "AdminPsico2025!"
     })
     assert login_response.status_code == 200
     token = login_response.json()["access_token"]
-
     return {"Authorization": f"Bearer {token}"}
