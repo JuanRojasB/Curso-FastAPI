@@ -4,42 +4,33 @@ from app.main import app
 
 client = TestClient(app)
 
-class TestDomainMiddleware:
 
-    def test_rate_limiting_enforcement(self):
-        """Verifica que el rate limiting funcione"""
-        # Hacer muchas requests rápidas
-        for i in range(150):  # Exceder límite
-            response = client.get("/tu_prefijo/test-endpoint")
+class TestCentroEsteticoMiddleware:
+    def test_rate_limiting_reservas(self):
+        """Verifica que el rate limiting funcione en reservas"""
+        for i in range(150):
+            response = client.post("/spa/reservas", json={"cliente_id": 1, "tratamiento_id": 2, "fecha": "2025-09-25T10:00:00"})
             if response.status_code == 429:
                 break
         else:
-            pytest.fail("Rate limiting no se activó")
+            pytest.fail("Rate limiting no se activó en reservas")
 
-    def test_business_hours_validation(self):
-        """Verifica validación de horarios de atención"""
+    def test_horarios_atencion(self):
+        """Verifica validación de horarios de atención del centro estético"""
         # Simular request fuera de horario (requiere mock del tiempo)
-        response = client.get("/tu_prefijo/restricted-endpoint")
-        # Verificar según configuración del dominio
+        response = client.get("/spa/horario-restringido")
         assert response.status_code in [200, 403]
 
-    def test_domain_specific_logging(self):
-        """Verifica que el logging específico funcione"""
-        response = client.get("/tu_prefijo/logged-endpoint")
+    def test_logging_acciones(self):
+        """Verifica que el logging de acciones relevantes funcione"""
+        response = client.post("/spa/accion-log", json={"empleado_id": 1, "accion": "registro_reserva"})
         assert response.status_code == 200
-
-        # Verificar que se creó el archivo de log
         import os
-        assert os.path.exists("logs/tu_prefijo_domain.log")
+        assert os.path.exists("logs/spa_domain.log")
 
-    def test_required_headers_validation(self):
-        """Verifica validación de headers requeridos"""
-        # Request sin headers requeridos
-        response = client.get("/tu_prefijo/protected-endpoint")
-
-        # Request con headers requeridos
-        headers = {"X-Your-Required-Header": "test-value"}
-        response_with_headers = client.get("/tu_prefijo/protected-endpoint", headers=headers)
-
-        # Verificar comportamiento según configuración del dominio
+    def test_headers_cliente_empleado(self):
+        """Verifica validación de headers requeridos para clientes y empleados"""
+        response = client.get("/spa/cliente-protegido")
+        headers = {"X-Cliente-Token": "token123", "X-Empleado-Token": "token456"}
+        response_with_headers = client.get("/spa/cliente-protegido", headers=headers)
         assert response.status_code == 400 or response_with_headers.status_code == 200

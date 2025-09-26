@@ -1,37 +1,47 @@
 {
 "dashboard": {
-    "title": "API Performance - TU_PREFIJO",
+    "title": "Centro Estético - Monitoreo API",
     "panels": [
     {
-        "title": "Request Rate",
+        "title": "Reservas por minuto",
         "type": "graph",
         "targets": [
         {
-            "expr": "rate(tu_prefijo_requests_total[5m])",
-            "legendFormat": "{{method}} {{endpoint}}"
+            "expr": "rate(spa_reservas_total[5m])",
+            "legendFormat": "Reservas"
         }
         ]
     },
     {
-        "title": "Response Time",
+        "title": "Tratamientos solicitados",
         "type": "graph",
         "targets": [
         {
-            "expr": "histogram_quantile(0.95, rate(tu_prefijo_response_duration_seconds_bucket[5m]))",
+            "expr": "rate(spa_tratamientos_solicitados_total[5m])",
+            "legendFormat": "Tratamientos"
+        }
+        ]
+    },
+    {
+        "title": "Tiempo de respuesta API",
+        "type": "graph",
+        "targets": [
+        {
+            "expr": "histogram_quantile(0.95, rate(spa_response_duration_seconds_bucket[5m]))",
             "legendFormat": "95th percentile"
         }
         ]
     },
     {
-        "title": "System Resources",
+        "title": "Recursos del sistema",
         "type": "graph",
         "targets": [
         {
-            "expr": "tu_prefijo_cpu_usage_percent",
+            "expr": "spa_cpu_usage_percent",
             "legendFormat": "CPU Usage"
         },
         {
-            "expr": "tu_prefijo_memory_usage_bytes / 1024 / 1024",
+            "expr": "spa_memory_usage_bytes / 1024 / 1024",
             "legendFormat": "Memory (MB)"
         }
         ]

@@ -1,7 +1,7 @@
 # app/services/optimized_domain_service.py
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from .optimized_queries import DomainOptimizedQueries
+from app.database.optimized_queries import DomainOptimizedQueries
 from typing import List, Dict, Any, Optional
 
 class OptimizedDomainService:

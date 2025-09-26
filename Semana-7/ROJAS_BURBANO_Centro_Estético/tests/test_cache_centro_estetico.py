@@ -3,42 +3,41 @@ import pytest
 # tests/test_cache_centro_estetico.py
 from app.cache.redis_config import cache_manager
 
-class TestDomainCache:
-    
-    
-    def test_cache_basic_functionality(self):
-        """Verifica funcionalidad básica del cache"""
-        test_key = "test_entity_123"
-        test_data = {"id": 123, "nombre": "Test Entity"}
 
-        # Almacena en cache
-        assert cache_manager.set_cache(test_key, test_data)
-
-        # Recupera del cache
+class TestCentroEsteticoCache:
+    def test_cache_tratamientos_frecuentes(self):
+        """Verifica almacenamiento y recuperación de tratamientos frecuentes"""
+        test_key = "tratamientos_frecuentes"
+        test_data = [
+            {"id": 1, "nombre": "Limpieza Facial"},
+            {"id": 2, "nombre": "Depilación Láser"}
+        ]
+        assert cache_manager.set_cache(test_key, test_data, 'frequent_data')
         cached_data = cache_manager.get_cache(test_key)
         assert cached_data == test_data
-
-        # Limpia
         cache_manager.invalidate_cache(test_key)
-        
-        
 
-    def test_domain_specific_caching(self):
-        
-        """Verifica caching específico de tu dominio"""
-        # Personaliza este test según tu dominio
-        # Ejemplo genérico:
-        entity_data = {"specific_field": "domain_value"}
-        cache_key = "spa_tratamientos_frecuentes"
+    def test_cache_configuracion_centro(self):
+        """Verifica almacenamiento y recuperación de configuración del centro estético"""
+        config_key = "configuracion"
+        config_data = {
+            "horario": "09:00-19:00",
+            "direccion": "Av. Belleza 123",
+            "telefono": "555-1234"
+        }
+        assert cache_manager.set_cache(config_key, config_data, 'stable_data')
+        cached_config = cache_manager.get_cache(config_key)
+        assert cached_config == config_data
+        cache_manager.invalidate_cache(config_key)
 
-        # Establece los datos en la caché con una clave que refleja el dominio
-        cache_manager.set_cache(cache_key, entity_data, 'frequent_data')
-        
-        # Recupera los datos de la caché
-        retrieved = cache_manager.get_cache(cache_key)
-
-        # Verifica que los datos recuperados sean los mismos
-        assert retrieved == entity_data
-
-        # Limpia la caché
-        cache_manager.invalidate_cache(cache_key)
+    def test_cache_catalogo_servicios_equipos(self):
+        """Verifica almacenamiento y recuperación del catálogo de servicios y equipos"""
+        catalog_key = "catalogo"
+        catalog_data = {
+            "servicios": ["Masaje Relajante", "Peeling Químico"],
+            "equipos": ["Láser Diodo", "Radiofrecuencia"]
+        }
+        assert cache_manager.set_cache(catalog_key, catalog_data, 'reference_data')
+        cached_catalog = cache_manager.get_cache(catalog_key)
+        assert cached_catalog == catalog_data
+        cache_manager.invalidate_cache(catalog_key)

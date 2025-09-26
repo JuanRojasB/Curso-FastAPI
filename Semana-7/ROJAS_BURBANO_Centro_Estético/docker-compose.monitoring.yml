@@ -1,9 +1,10 @@
 # docker-compose.monitoring.yml
+
 version: '3.8'
 services:
   prometheus:
     image: prom/prometheus:latest
-    container_name: prometheus_tu_prefijo
+    container_name: prometheus_spa
     ports:
       - '9090:9090'
     volumes:
@@ -13,16 +14,34 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--web.console.libraries=/etc/prometheus/console_libraries'
       - '--web.console.templates=/etc/prometheus/consoles'
+    restart: unless-stopped
 
   grafana:
     image: grafana/grafana:latest
-    container_name: grafana_tu_prefijo
+    container_name: grafana_spa
     ports:
       - '3000:3000'
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin123
     volumes:
       - grafana-storage:/var/lib/grafana
+    restart: unless-stopped
+
+  redis:
+    image: redis:latest
+    container_name: redis_spa
+    ports:
+      - '6379:6379'
+    restart: unless-stopped
+
+  fastapi:
+    build: ./app
+    container_name: fastapi_spa
+    ports:
+      - '8000:8000'
+    depends_on:
+      - redis
+    restart: unless-stopped
 
 volumes:
   grafana-storage:
