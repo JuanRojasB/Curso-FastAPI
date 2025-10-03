@@ -1,0 +1,33 @@
+# Lavandería Express QuickClean - Dependencias de Desarrollo
+# Ficha 3147246 - Semana 8
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+pytest-benchmark==4.0.0
+pytest-html==4.1.1
+httpx==0.25.2
+faker==20.1.0
+factory-boy==3.3.0
+requests-mock==1.11.0
+
+# Calidad de Código
+black==23.11.0
+isort==5.12.0
+flake8==6.1.0
+mypy==1.7.1
+bandit==1.7.5
+pylint==3.0.3
+
+# Pre-commit
+pre-commit==3.5.0
+
+# Documentación
+mkdocs==1.5.3
+mkdocs-material==9.4.14
+
+# Utilidades de Desarrollo
+ipython==8.18.1
+ipdb==0.13.13
